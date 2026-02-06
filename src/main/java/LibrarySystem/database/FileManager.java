@@ -57,18 +57,21 @@ public class FileManager {
                 String author = st.nextToken();
                 int year = Integer.parseInt(st.nextToken());
                 String borrowedBy = st.nextToken();
+
+                if(borrowedBy.equals("null")) borrowedBy = null;
+
                 boolean isAvailable = Boolean.parseBoolean(st.nextToken());
 
                 String borrowDateString = st.nextToken();
                 LocalDate borrowDate;
 
-                if(borrowDateString.equals("null")) {borrowDate = null;}
+                if(borrowDateString.equals("null")) borrowDate = null;
                 else borrowDate = LocalDate.parse(borrowDateString);
 
                 String deadLineString = st.nextToken();
                 LocalDate deadLine;
 
-                if(deadLineString.equals("null")) {deadLine = null;}
+                if(deadLineString.equals("null")) deadLine = null;
                 else deadLine = LocalDate.parse(deadLineString);
 
                 Book book = new Book(title, author, year);
