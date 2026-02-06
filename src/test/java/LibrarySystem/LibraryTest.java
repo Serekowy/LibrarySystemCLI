@@ -1,5 +1,10 @@
 package LibrarySystem;
 
+import LibrarySystem.model.Book;
+import LibrarySystem.model.NormalUser;
+import LibrarySystem.model.Role;
+import LibrarySystem.model.User;
+import LibrarySystem.service.Library;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

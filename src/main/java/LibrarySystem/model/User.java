@@ -1,4 +1,8 @@
-package LibrarySystem;
+package LibrarySystem.model;
+
+import LibrarySystem.database.Database;
+import LibrarySystem.service.Library;
+import LibrarySystem.ui.Display;
 
 public abstract class User {
 

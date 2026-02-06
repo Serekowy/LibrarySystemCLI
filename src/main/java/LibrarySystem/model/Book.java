@@ -1,4 +1,4 @@
-package LibrarySystem;
+package LibrarySystem.model;
 
 import java.time.LocalDate;
 

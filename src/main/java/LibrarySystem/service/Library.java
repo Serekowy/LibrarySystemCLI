@@ -1,4 +1,6 @@
-package LibrarySystem;
+package LibrarySystem.service;
+
+import LibrarySystem.model.Book;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

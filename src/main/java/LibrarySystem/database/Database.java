@@ -1,4 +1,9 @@
-package LibrarySystem;
+package LibrarySystem.database;
+
+import LibrarySystem.model.Role;
+import LibrarySystem.model.User;
+import LibrarySystem.model.Admin;
+import LibrarySystem.model.NormalUser;
 
 import java.util.ArrayList;
 

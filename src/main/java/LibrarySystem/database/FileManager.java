@@ -1,4 +1,10 @@
-package LibrarySystem;
+package LibrarySystem.database;
+
+import LibrarySystem.model.Role;
+import LibrarySystem.model.User;
+import LibrarySystem.model.Admin;
+import LibrarySystem.model.Book;
+import LibrarySystem.model.NormalUser;
 
 import java.io.*;
 import java.time.LocalDate;

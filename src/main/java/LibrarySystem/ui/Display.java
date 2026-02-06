@@ -1,4 +1,8 @@
-package LibrarySystem;
+package LibrarySystem.ui;
+
+import LibrarySystem.model.Role;
+import LibrarySystem.model.User;
+import LibrarySystem.model.Book;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

@@ -1,4 +1,9 @@
-package LibrarySystem;
+package LibrarySystem.model;
+
+import LibrarySystem.database.Database;
+import LibrarySystem.database.FileManager;
+import LibrarySystem.service.Library;
+import LibrarySystem.ui.Display;
 
 import java.time.LocalDate;
 
