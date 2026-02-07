@@ -320,5 +320,18 @@ public class Display {
             System.out.println("Nie udało się zmienić roli użytkownika, spróbuj ponownie.");
         }
     }
+    //db
+
+    public void showConnectionSucces() {
+        System.out.println("Połączono z bazą danych.");
+    }
+
+    public void showConnectionError() {
+        System.out.println("Błąd połączenia z bazą danych.");
+    }
+
+    public void showSQLError() {
+        System.out.println("Nie udało się pomyślnie wykonać zapytania do bazy danych.");
+    }
 
 }

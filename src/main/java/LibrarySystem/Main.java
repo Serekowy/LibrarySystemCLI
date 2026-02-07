@@ -1,6 +1,7 @@
 package LibrarySystem;
 
 import LibrarySystem.database.Database;
+import LibrarySystem.database.DatabaseManager;
 import LibrarySystem.database.FileManager;
 import LibrarySystem.model.Admin;
 import LibrarySystem.model.NormalUser;
@@ -11,6 +12,9 @@ import LibrarySystem.ui.Display;
 
 public class Main {
     public static void main(String[] args) {
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        databaseManager.connectAndCreateTables();
 
         Library library = new Library();
         Display display = new Display();
@@ -84,9 +88,11 @@ public class Main {
                     String repeatPassword = display.getRepeatPassword();
 
                     if(isUsernameAvailable && isEmailAvailable && password.equals(repeatPassword)) {
-                        database.addUser(new NormalUser(username, password, email, Role.USER));
+                        User newUser = new NormalUser(username, password, email, Role.USER);
+                        database.addUser(newUser);
                         display.showRegisterSucces();
                         fm.saveUsers(database.getUsers());
+                        databaseManager.insertUser(newUser);
                     } else {
                         display.showRegisterError();
                         display.checkUsernameAvailability(isUsernameAvailable, username);

@@ -1,6 +1,7 @@
 package LibrarySystem.model;
 
 import LibrarySystem.database.Database;
+import LibrarySystem.database.DatabaseManager;
 import LibrarySystem.database.FileManager;
 import LibrarySystem.service.Library;
 import LibrarySystem.ui.Display;
@@ -17,6 +18,7 @@ public class Admin extends User {
     public void runMenu(Library library, Display display, Database database) {
 
         FileManager fm = new FileManager();
+        DatabaseManager databaseManager = new DatabaseManager();
 
         boolean running = true;
 
@@ -54,6 +56,7 @@ public class Admin extends User {
                     else {
                         display.showAddBookResult(library.addBook(newBook));
                         fm.saveBooks(library.getBooks());
+                        databaseManager.insertBook(newBook);
                         display.waitForAction();
                     }
                 }
