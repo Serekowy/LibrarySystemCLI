@@ -43,3 +43,8 @@ build/
 /.idea/encodings.xml
 /.idea/misc.xml
 /.idea/vcs.xml
+/.idea/data_source_mapping.xml
+/.idea/dataSources.xml
+/identifier.sqlite
+/library.db
+/.idea/sqldialects.xml
