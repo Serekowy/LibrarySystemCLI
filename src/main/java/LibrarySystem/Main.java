@@ -2,7 +2,6 @@ package LibrarySystem;
 
 import LibrarySystem.database.Database;
 import LibrarySystem.database.DatabaseManager;
-import LibrarySystem.database.FileManager;
 import LibrarySystem.model.Admin;
 import LibrarySystem.model.NormalUser;
 import LibrarySystem.model.Role;
@@ -14,21 +13,20 @@ public class Main {
     public static void main(String[] args) {
 
         DatabaseManager databaseManager = new DatabaseManager();
-        databaseManager.connectAndCreateTables();
-
         Library library = new Library();
         Display display = new Display();
         Database database = new Database();
-        FileManager fm = new FileManager();
 
-        library.setBooks(fm.loadBooks());
-        database.setUsers(fm.loadUsers());
+        databaseManager.connectAndCreateTables();
+        library.setBooks(databaseManager.selectBooks());
+        database.setUsers(databaseManager.selectUsers());
 
         boolean systemRunning = true;
 
         if(database.getUsers().isEmpty()){
             Admin admin = new Admin("a", "a", "root@admin.com", Role.ADMIN);
-            database.addUser(admin);
+            databaseManager.insertUser(admin);
+            database.setUsers(databaseManager.selectUsers());
         }
 
         while (systemRunning) {
@@ -65,7 +63,7 @@ public class Main {
                     } else {
                         display.showNoDataRegisterMessage();
                     }
-                    fm.saveBooks(library.getBooks());
+                    library.setBooks(databaseManager.selectBooks());
                 }
                 case "2" -> {
                     display.showRegisterMessage();
@@ -90,9 +88,8 @@ public class Main {
                     if(isUsernameAvailable && isEmailAvailable && password.equals(repeatPassword)) {
                         User newUser = new NormalUser(username, password, email, Role.USER);
                         database.addUser(newUser);
-                        display.showRegisterSucces();
-                        fm.saveUsers(database.getUsers());
                         databaseManager.insertUser(newUser);
+                        display.showRegisterSucces();
                     } else {
                         display.showRegisterError();
                         display.checkUsernameAvailability(isUsernameAvailable, username);
