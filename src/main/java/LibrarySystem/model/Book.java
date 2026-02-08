@@ -49,12 +49,12 @@ public class Book {
         this.available = available;
     }
 
-    public void setBorrowDate(LocalDate borrowDate) {
-        this.borrowDate = borrowDate;
-    }
-
     public LocalDate getBorrowDate() {
         return borrowDate;
+    }
+
+    public void setBorrowDate(LocalDate borrowDate) {
+        this.borrowDate = borrowDate;
     }
 
     public void setDeadline(LocalDate returnDeadLine) {

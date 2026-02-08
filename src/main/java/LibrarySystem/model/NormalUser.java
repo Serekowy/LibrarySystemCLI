@@ -1,7 +1,6 @@
 package LibrarySystem.model;
 
 import LibrarySystem.database.Database;
-import LibrarySystem.database.FileManager;
 import LibrarySystem.service.Library;
 import LibrarySystem.ui.Display;
 
@@ -13,7 +12,6 @@ public class NormalUser extends User {
 
     @Override
     public void runMenu(Library library, Display display, Database database) {
-        FileManager fm = new FileManager();
         boolean running = true;
 
         while (running) {
@@ -29,13 +27,11 @@ public class NormalUser extends User {
                     String bookTitle = display.getBookTitle();
                     String borrowedBy = username;
                     display.showBookBorrowResult(library.borrowBook(bookTitle, borrowedBy), bookTitle);
-                    fm.saveBooks(library.getBooks());
                     display.waitForAction();
                 }
                 case "3" -> {
                     String bookTitle = display.getBookTitle();
                     display.showBookReturnResult(library.returnBook(bookTitle), bookTitle);
-                    fm.saveBooks(library.getBooks());
                     display.waitForAction();
                 }
                 case "4" -> {

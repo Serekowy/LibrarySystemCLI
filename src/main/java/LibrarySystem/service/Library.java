@@ -1,5 +1,6 @@
 package LibrarySystem.service;
 
+import LibrarySystem.database.DatabaseManager;
 import LibrarySystem.model.Book;
 
 import java.time.LocalDate;
@@ -8,12 +9,14 @@ import java.util.stream.Collectors;
 
 public class Library {
 
-    private ArrayList<Book> books = new ArrayList<>();
     private static final int BOOK_BORROW_TIME = 7;
+    DatabaseManager databaseManager = new DatabaseManager();
+    private ArrayList<Book> books = new ArrayList<>();
 
     public boolean addBook(Book book) {
         try {
             books.add(book);
+            databaseManager.insertBook(book);
             return true;
         } catch (Exception e) {
             return false;
@@ -21,7 +24,16 @@ public class Library {
     }
 
     public boolean removeBook(String bookTitle) {
-        return books.removeIf(b -> b.getTitle().equalsIgnoreCase(bookTitle));
+
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(bookTitle)) {
+                books.remove(book);
+                databaseManager.deleteBook(bookTitle);
+                return true;
+            }
+        }
+
+        return false;
     }
 
     //TODO jeżeli są dwie takie same książki, to wtedy wyświetlić pole autora żeby wypożyczyć odpowiednią dodatkowo może książki po id wtedy poprawnie by było
@@ -32,6 +44,7 @@ public class Library {
                 book.setBorrowDate(LocalDate.now());
                 book.setDeadline(book.getBorrowDate().plusDays(BOOK_BORROW_TIME));
                 book.setBorrowedBy(username);
+                databaseManager.updateBook(book);
                 return true;
             }
         }
@@ -45,6 +58,7 @@ public class Library {
                 book.setBorrowDate(null);
                 book.setDeadline(null);
                 book.setBorrowedBy(null);
+                databaseManager.updateBook(book);
                 return true;
             }
         }
@@ -75,9 +89,10 @@ public class Library {
 
     public boolean changeDeadLine(String bookTitle, LocalDate deadLine) {
         for (Book book : books) {
-            if (book.getTitle().equalsIgnoreCase(bookTitle) &&  !book.isAvailable()) {
-                    book.setDeadline(deadLine);
-                    return true;
+            if (book.getTitle().equalsIgnoreCase(bookTitle) && !book.isAvailable()) {
+                book.setDeadline(deadLine);
+                databaseManager.updateDeadLine(bookTitle, deadLine.toString());
+                return true;
             }
         }
         return false;

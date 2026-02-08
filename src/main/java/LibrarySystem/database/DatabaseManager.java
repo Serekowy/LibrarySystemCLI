@@ -115,7 +115,7 @@ public class DatabaseManager {
                     NormalUser user = new NormalUser(username, password, email, Role.USER);
                     users.add(user);
                 } else if (role.equals("ADMIN")) {
-                    Admin admin  = new Admin(username, password, email, Role.ADMIN);
+                    Admin admin = new Admin(username, password, email, Role.ADMIN);
                     users.add(admin);
                 }
             }
@@ -132,7 +132,7 @@ public class DatabaseManager {
         ArrayList<Book> books = new ArrayList<>();
         String sql = "SELECT * FROM books";
 
-        try(Connection conn = DriverManager.getConnection(DB_URL)) {
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -154,10 +154,10 @@ public class DatabaseManager {
                 book.setBorrowedBy(borrowedBy);
 
                 borrowDate = rs.getString("borrowDate");
-                if(borrowDate != null) book.setBorrowDate(LocalDate.parse(borrowDate));
+                if (borrowDate != null) book.setBorrowDate(LocalDate.parse(borrowDate));
 
                 returnDeadLine = rs.getString("returnDeadLine");
-                if(returnDeadLine != null) book.setDeadline(LocalDate.parse(returnDeadLine));
+                if (returnDeadLine != null) book.setDeadline(LocalDate.parse(returnDeadLine));
 
                 books.add(book);
             }
@@ -168,5 +168,75 @@ public class DatabaseManager {
             display.showSQLError();
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    public void deleteBook(String title) {
+        String sql = "DELETE FROM books WHERE title = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, title);
+            pstmt.executeUpdate();
+
+
+        } catch (SQLException e) {
+            display.showSQLError();
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public void updateDeadLine(String title, String date) {
+        String sql = "UPDATE books SET returnDeadLine = ? WHERE title = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, date);
+            pstmt.setString(2, title);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            display.showSQLError();
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public void updateRole(String username, Role newRole) {
+        String sql = "UPDATE users SET role = ? WHERE username = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, newRole.toString());
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            display.showSQLError();
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
+    public void updateBook(Book book) {
+        String sql = "UPDATE books SET available = ?, borrowedBy = ?, borrowDate = ?, returnDeadLine = ?   WHERE title = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setBoolean(1, book.isAvailable());
+            pstmt.setString(2, book.getBorrowedBy());
+
+            if (book.getBorrowDate() != null) pstmt.setString(3, book.getBorrowDate().toString());
+            else pstmt.setString(3, null);
+
+            if (book.getDeadLine() != null) pstmt.setString(4, book.getDeadLine().toString());
+            else pstmt.setString(4, null);
+
+            pstmt.setString(5, book.getTitle());
+            pstmt.executeUpdate();
+
+
+        } catch (SQLException e) {
+            display.showSQLError();
+            throw new RuntimeException(e.getMessage());
+        }
+
     }
 }

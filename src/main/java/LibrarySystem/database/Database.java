@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class Database {
     public ArrayList<User> users = new ArrayList<>();
+    DatabaseManager databaseManager = new DatabaseManager();
 
     public void addUser(User user) {
         users.add(user);
@@ -55,26 +56,36 @@ public class Database {
 
     public boolean changeUserRole(String username, Role role) {
 
-        if (role == null) { return false; }
+        if (role == null) {
+            return false;
+        }
 
         for (int i = 0; i < users.size(); i++) {
             User user = users.get(i);
 
             if (user.getUsername().equalsIgnoreCase(username)) {
-                switch(role) {
+                switch (role) {
                     case USER -> {
-                        if(user instanceof NormalUser) { return false;}
+                        if (user instanceof NormalUser) {
+                            return false;
+                        }
                         NormalUser newUser = new NormalUser(user.getUsername(), user.getPassword(), user.getEmail(), Role.USER);
-                        users.set(i,newUser);
+                        users.set(i, newUser);
+                        databaseManager.updateRole(username, Role.USER);
                         return true;
                     }
                     case ADMIN -> {
-                        if(user instanceof Admin) { return false;}
+                        if (user instanceof Admin) {
+                            return false;
+                        }
                         Admin newAdmin = new Admin(user.getUsername(), user.getPassword(), user.getEmail(), Role.ADMIN);
                         users.set(i, newAdmin);
+                        databaseManager.updateRole(username, Role.ADMIN);
                         return true;
                     }
-                    default -> {return false;}
+                    default -> {
+                        return false;
+                    }
                 }
             }
         }

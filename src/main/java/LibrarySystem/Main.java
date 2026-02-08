@@ -23,7 +23,7 @@ public class Main {
 
         boolean systemRunning = true;
 
-        if(database.getUsers().isEmpty()){
+        if (database.getUsers().isEmpty()) {
             Admin admin = new Admin("a", "a", "root@admin.com", Role.ADMIN);
             databaseManager.insertUser(admin);
             database.setUsers(databaseManager.selectUsers());
@@ -41,9 +41,13 @@ public class Main {
 
                     while (currentUser == null) {
                         String username = display.getUsername();
-                        if (username.isBlank()) {break;}
+                        if (username.isBlank()) {
+                            break;
+                        }
                         String password = display.getPassword();
-                        if (password.isBlank()) {break;}
+                        if (password.isBlank()) {
+                            break;
+                        }
 
                         User loggingUser = database.getUserByUsername(username);
 
@@ -52,18 +56,17 @@ public class Main {
                             break;
                         }
 
-                        if(display.loginStatus(loggingUser.checkPassword(password))) {
+                        if (display.loginStatus(loggingUser.checkPassword(password))) {
                             currentUser = loggingUser;
                         } else {
                             display.waitForAction();
                         }
                     }
-                    if(currentUser != null) {
+                    if (currentUser != null) {
                         currentUser.runMenu(library, display, database);
                     } else {
                         display.showNoDataRegisterMessage();
                     }
-                    library.setBooks(databaseManager.selectBooks());
                 }
                 case "2" -> {
                     display.showRegisterMessage();
@@ -71,21 +74,30 @@ public class Main {
                     String username = display.getUsername();
                     boolean isUsernameAvailable = database.checkUsernameAvailability(username);
 
-                    if(username.isBlank()) {display.showNoDataRegisterMessage(); break; }
+                    if (username.isBlank()) {
+                        display.showNoDataRegisterMessage();
+                        break;
+                    }
 
                     String email = display.getEmail();
                     boolean isEmailAvailable = database.checkEmailAvailability(email);
 
-                    if(email.isBlank()) {display.showNoDataRegisterMessage(); break; }
+                    if (email.isBlank()) {
+                        display.showNoDataRegisterMessage();
+                        break;
+                    }
 
                     String password = display.getPassword();
 
-                    if(password.isBlank()) {display.showNoDataRegisterMessage(); break; }
+                    if (password.isBlank()) {
+                        display.showNoDataRegisterMessage();
+                        break;
+                    }
 
                     password = display.checkPasswordLength(password);
                     String repeatPassword = display.getRepeatPassword();
 
-                    if(isUsernameAvailable && isEmailAvailable && password.equals(repeatPassword)) {
+                    if (isUsernameAvailable && isEmailAvailable && password.equals(repeatPassword)) {
                         User newUser = new NormalUser(username, password, email, Role.USER);
                         database.addUser(newUser);
                         databaseManager.insertUser(newUser);
