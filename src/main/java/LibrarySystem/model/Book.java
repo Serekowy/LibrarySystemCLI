@@ -3,6 +3,7 @@ package LibrarySystem.model;
 import java.time.LocalDate;
 
 public class Book {
+    private int id;
     private final String title;
     private final String author;
     private final Integer year;
@@ -12,6 +13,7 @@ public class Book {
     private LocalDate returnDeadLine;
 
     public Book(String title, String author, Integer year) {
+        this.id = 0;
         this.title = title;
         this.author = author;
         this.year = year;
@@ -19,6 +21,14 @@ public class Book {
         this.available = true;
         this.borrowDate = null;
         this.returnDeadLine = null;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {

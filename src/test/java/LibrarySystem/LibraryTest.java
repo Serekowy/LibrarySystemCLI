@@ -35,7 +35,7 @@ class LibraryTest {
         Book book = new Book("Harry Potter", "Rowling", 2000);
         library.addBook(book);
 
-        assertTrue(library.removeBook("Harry Potter"));
+        assertTrue(library.removeBook(1));
         assertEquals(0, library.getBooks().size());
     }
 

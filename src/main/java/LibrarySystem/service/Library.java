@@ -11,11 +11,9 @@ public class Library {
 
     private static final int BOOK_BORROW_TIME = 7;
     DatabaseManager databaseManager = new DatabaseManager();
-    private ArrayList<Book> books = new ArrayList<>();
 
     public boolean addBook(Book book) {
         try {
-            books.add(book);
             databaseManager.insertBook(book);
             return true;
         } catch (Exception e) {
@@ -23,12 +21,11 @@ public class Library {
         }
     }
 
-    public boolean removeBook(String bookTitle) {
+    public boolean removeBook(int bookId) {
 
-        for (Book book : books) {
-            if (book.getTitle().equalsIgnoreCase(bookTitle)) {
-                books.remove(book);
-                databaseManager.deleteBook(bookTitle);
+        for (Book book : getBooks()) {
+            if (book.getId() == bookId) {
+                databaseManager.deleteBook(bookId);
                 return true;
             }
         }
@@ -38,7 +35,7 @@ public class Library {
 
     //TODO jeżeli są dwie takie same książki, to wtedy wyświetlić pole autora żeby wypożyczyć odpowiednią dodatkowo może książki po id wtedy poprawnie by było
     public boolean borrowBook(String bookTitle, String username) {
-        for (Book book : books) {
+        for (Book book : getBooks()) {
             if (book.getTitle().equalsIgnoreCase(bookTitle) && book.isAvailable()) {
                 book.setAvailable(false);
                 book.setBorrowDate(LocalDate.now());
@@ -52,7 +49,7 @@ public class Library {
     }
 
     public boolean returnBook(String bookTitle) {
-        for (Book book : books) {
+        for (Book book : getBooks()) {
             if (book.getTitle().equalsIgnoreCase(bookTitle) && !book.isAvailable()) {
                 book.setAvailable(true);
                 book.setBorrowDate(null);
@@ -66,32 +63,28 @@ public class Library {
     }
 
     public ArrayList<Book> getBooks() {
-        return books;
-    }
-
-    public void setBooks(ArrayList<Book> newBooks) {
-        books = newBooks;
+        return databaseManager.selectBooks();
     }
 
     public ArrayList<Book> getBorrowedBooks() {
-        return books.stream()
+        return getBooks().stream()
                 .filter(b -> !b.isAvailable())
                 .filter(b -> b.getDeadLine().isAfter(LocalDate.now()) || b.getDeadLine().equals(LocalDate.now()))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ArrayList<Book> getBooksAfterDeadline() {
-        return books.stream()
+        return getBooks().stream()
                 .filter(b -> !b.isAvailable())
                 .filter(b -> b.getDeadLine().isBefore(LocalDate.now()))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public boolean changeDeadLine(String bookTitle, LocalDate deadLine) {
-        for (Book book : books) {
-            if (book.getTitle().equalsIgnoreCase(bookTitle) && !book.isAvailable()) {
+    public boolean changeDeadLine(int bookId, LocalDate deadLine) {
+        for (Book book : getBooks()) {
+            if (book.getId() == bookId && !book.isAvailable()) {
                 book.setDeadline(deadLine);
-                databaseManager.updateDeadLine(bookTitle, deadLine.toString());
+                databaseManager.updateDeadLine(bookId, deadLine.toString());
                 return true;
             }
         }
@@ -99,14 +92,14 @@ public class Library {
     }
 
     public ArrayList<Book> getBooksByUsername(String username) {
-        return books.stream()
+        return getBooks().stream()
                 .filter(b -> !b.isAvailable())
                 .filter(b -> b.getBorrowedBy() != null && b.getBorrowedBy().equalsIgnoreCase(username))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ArrayList<Book> getBooksAfterDeadlineByUsername(String username) {
-        return books.stream()
+        return getBooks().stream()
                 .filter(b -> !b.isAvailable())
                 .filter(b -> b.getBorrowedBy() != null && b.getBorrowedBy().equalsIgnoreCase(username))
                 .filter(b -> b.getDeadLine().isBefore(LocalDate.now()))

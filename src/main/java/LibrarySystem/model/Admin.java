@@ -53,14 +53,14 @@ public class Admin extends User {
                     }
                 }
                 case "7" -> {
-                    String title = display.getBookTitle();
-                    display.removeBook(library.removeBook(title), title);
+                    int bookId = display.getBookId();
+                    display.removeBook(library.removeBook(bookId), bookId);
                     display.waitForAction();
                 }
                 case "8" -> {
-                    String bookTitle = display.getBookTitle();
+                    int bookId = display.getBookId();
                     LocalDate inputDate = display.getLocalDate();
-                    display.showChangeDeadLineStatus(library.changeDeadLine(bookTitle, inputDate), bookTitle);
+                    display.showChangeDeadLineStatus(library.changeDeadLine(bookId, inputDate), bookId);
                     display.waitForAction();
                 }
                 case "9" -> {

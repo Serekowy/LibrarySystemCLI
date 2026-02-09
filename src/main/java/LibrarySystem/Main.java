@@ -18,7 +18,6 @@ public class Main {
         Database database = new Database();
 
         databaseManager.connectAndCreateTables();
-        library.setBooks(databaseManager.selectBooks());
         database.setUsers(databaseManager.selectUsers());
 
         boolean systemRunning = true;

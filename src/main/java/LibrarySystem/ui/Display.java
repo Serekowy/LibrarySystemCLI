@@ -103,11 +103,11 @@ public class Display {
         System.out.println(text);
     }
 
-    public void removeBook(boolean result, String bookTitle) {
+    public void removeBook(boolean result, int bookId) {
         if(result) {
-            System.out.println("Udało się usunąć książkę '" + bookTitle + "' z bazy.");
+            System.out.println("Udało się usunąć książkę o ID '" + bookId + "' z bazy danych.");
         } else {
-            System.out.println("Książka nie istnieje lub podano zły tytuł.");
+            System.out.println("Książka nie istnieje lub podano złe ID.");
         }
     }
 
@@ -139,6 +139,28 @@ public class Display {
         System.out.print("Podaj tytuł książki: ");
 
         return scanner.nextLine();
+    }
+
+    public int getBookId() {
+        while (true) {
+            try {
+                System.out.print("Podaj ID książki:");
+                String input = scanner.nextLine();
+
+                if (input.isEmpty()) return -1;
+
+                int id = Integer.parseInt(input);
+
+                if(id < 0 || 9999 < id) {
+                    throw new NumberFormatException();
+                }
+
+                return id;
+
+            } catch (NumberFormatException e) {
+                System.out.println("Podane ID musi być w zakresie od 1 do 9999.");
+            }
+        }
     }
 
     public void showBookBorrowResult(boolean borrowed, String bookTitle) {
@@ -178,11 +200,11 @@ public class Display {
         return date;
     }
 
-    public void showChangeDeadLineStatus(boolean status, String bookTitle) {
+    public void showChangeDeadLineStatus(boolean status, int bookId) {
         if (status) {
-            System.out.println("Pomyślnie zmieniono datę oddania książki '" + bookTitle + "'.");
+            System.out.println("Pomyślnie zmieniono datę oddania książki o ID '" + bookId + "'.");
         } else {
-            System.out.println("Książka '" + bookTitle + "'nie jest wypożyczona lub nie istnieje.");
+            System.out.println("Książka o ID '" + bookId + "'nie jest wypożyczona lub nie istnieje.");
         }
     }
 

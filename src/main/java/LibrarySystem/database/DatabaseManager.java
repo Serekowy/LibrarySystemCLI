@@ -137,7 +137,7 @@ public class DatabaseManager {
             ResultSet rs = stmt.executeQuery(sql);
 
             boolean available;
-            int year;
+            int id, year;
             String title, author, borrowedBy, borrowDate, returnDeadLine;
 
             while (rs.next()) {
@@ -146,6 +146,9 @@ public class DatabaseManager {
                 year = rs.getInt("year");
 
                 Book book = new Book(title, author, year);
+
+                id = rs.getInt("id");
+                book.setId(id);
 
                 available = rs.getBoolean("available");
                 book.setAvailable(available);
@@ -170,12 +173,12 @@ public class DatabaseManager {
         }
     }
 
-    public void deleteBook(String title) {
-        String sql = "DELETE FROM books WHERE title = ?";
+    public void deleteBook(int id) {
+        String sql = "DELETE FROM books WHERE id = ?";
 
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, title);
+            pstmt.setInt(1, id);
             pstmt.executeUpdate();
 
 
@@ -185,13 +188,13 @@ public class DatabaseManager {
         }
     }
 
-    public void updateDeadLine(String title, String date) {
-        String sql = "UPDATE books SET returnDeadLine = ? WHERE title = ?";
+    public void updateDeadLine(int id, String date) {
+        String sql = "UPDATE books SET returnDeadLine = ? WHERE id = ?";
 
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, date);
-            pstmt.setString(2, title);
+            pstmt.setInt(2, id);
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -216,7 +219,7 @@ public class DatabaseManager {
     }
 
     public void updateBook(Book book) {
-        String sql = "UPDATE books SET available = ?, borrowedBy = ?, borrowDate = ?, returnDeadLine = ?   WHERE title = ?";
+        String sql = "UPDATE books SET available = ?, borrowedBy = ?, borrowDate = ?, returnDeadLine = ?   WHERE id = ?";
 
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -229,7 +232,7 @@ public class DatabaseManager {
             if (book.getDeadLine() != null) pstmt.setString(4, book.getDeadLine().toString());
             else pstmt.setString(4, null);
 
-            pstmt.setString(5, book.getTitle());
+            pstmt.setInt(5, book.getId());
             pstmt.executeUpdate();
 
 
