@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class DatabaseManager {
-    private static final String DB_URL = "jdbc:sqlite:library.db";
+    private static final String DB_URL = "jdbc:sqlite:test.db";
     private final Display display = new Display();
 
     public void connectAndCreateTables() {
@@ -240,6 +240,22 @@ public class DatabaseManager {
             display.showSQLError();
             throw new RuntimeException(e.getMessage());
         }
+    }
 
+    public void clearDatabase() {
+        String deleteBooks = "DELETE FROM books";
+        String deleteUsers = "DELETE FROM users";
+        String resetIds = "DELETE FROM sqlite_sequence";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL);
+             Statement stmt = conn.createStatement()) {
+
+            stmt.executeUpdate(deleteBooks);
+            stmt.executeUpdate(deleteUsers);
+            stmt.executeUpdate(resetIds);
+
+        } catch (SQLException e) {
+            System.out.println("Błąd podczas czyszczenia bazy testowej: " + e.getMessage());
+        }
     }
 }
