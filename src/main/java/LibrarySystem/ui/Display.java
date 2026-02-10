@@ -13,7 +13,8 @@ public class Display {
 
     Scanner scanner = new Scanner(System.in);
 
-    public Display() {}
+    public Display() {
+    }
 
     public void showUserMenu() {
         System.out.println("Menu");
@@ -53,7 +54,7 @@ public class Display {
         System.out.print("Podaj tytuł książki: ");
         String title = scanner.nextLine();
 
-        if(title.isEmpty()) {
+        if (title.isEmpty()) {
             System.out.println("Anulowano dodawanie nowej książki.");
             return null;
         }
@@ -61,14 +62,14 @@ public class Display {
         System.out.print("Podaj autora książki: ");
         String author = scanner.nextLine();
 
-        if(author.isEmpty()) {
+        if (author.isEmpty()) {
             System.out.println("Anulowano dodawanie nowej książki.");
             return null;
         }
 
         int year = getValidBookYear();
 
-        if(year == -1) {
+        if (year == -1) {
             System.out.println("Anulowano dodawanie nowej książki.");
             return null;
         }
@@ -86,7 +87,7 @@ public class Display {
 
                 int year = Integer.parseInt(input);
 
-                if(year < 0 || LocalDate.now().getYear() < year) {
+                if (year < 0 || LocalDate.now().getYear() < year) {
                     throw new NumberFormatException();
                 }
 
@@ -104,15 +105,15 @@ public class Display {
     }
 
     public void removeBook(boolean result, int bookId) {
-        if(result) {
+        if (result) {
             System.out.println("Udało się usunąć książkę o ID '" + bookId + "' z bazy danych.");
         } else {
             System.out.println("Książka nie istnieje lub podano złe ID.");
         }
     }
 
-    public void showBooks(ArrayList <Book> books) {
-        System.out.printf("%-30s %-20s %-15s %s%n" ,"Tytuł", "Autor", "Rok wydania", "Dostępna");
+    public void showBooks(ArrayList<Book> books) {
+        System.out.printf("%-30s %-20s %-15s %s%n", "Tytuł", "Autor", "Rok wydania", "Dostępna");
 
         books.forEach(
                 book -> {
@@ -122,13 +123,23 @@ public class Display {
         );
     }
 
-    public void showBorrowedBooks(ArrayList <Book> borrowedBooks) {
-        System.out.printf("%-30s %-20s %-15s %-15s %-15s%n" ,"Tytuł", "Autor", "Rok wydania", "Wypożyczona", "Termin zwrotu");
+    public void showBooksAdmin(ArrayList<Book> books) {
+        System.out.printf("%-3s %-30s %-20s %-15s %s%n", "ID", "Tytuł", "Autor", "Rok wydania", "Dostępna");
+
+        books.forEach(
+                book -> {
+                    String borrowed = (book.isAvailable()) ? "Tak" : "Nie";
+                    System.out.printf("%-3s %-30s %-20s %-15d %s%n", book.getId(), book.getTitle(), book.getAuthor(), book.getYear(), borrowed);
+                }
+        );
+    }
+
+    public void showBorrowedBooks(ArrayList<Book> borrowedBooks) {
+        System.out.printf("%-30s %-20s %-15s %-15s %-15s%n", "Tytuł", "Autor", "Rok wydania", "Wypożyczona", "Termin zwrotu");
 
         borrowedBooks.forEach(
-                book -> System.out.printf("%-30s %-20s %-15d %-15s %-15s%n", book.getTitle(), book.getAuthor(), book.getYear(), dateToString(book.getBorrowDate()),  dateToString(book.getDeadLine()))
+                book -> System.out.printf("%-30s %-20s %-15d %-15s %-15s%n", book.getTitle(), book.getAuthor(), book.getYear(), dateToString(book.getBorrowDate()), dateToString(book.getDeadLine()))
         );
-
     }
 
     private String dateToString(LocalDate date) {
@@ -151,7 +162,7 @@ public class Display {
 
                 int id = Integer.parseInt(input);
 
-                if(id < 0 || 9999 < id) {
+                if (id < 0 || 9999 < id) {
                     throw new NumberFormatException();
                 }
 
@@ -179,7 +190,7 @@ public class Display {
         }
     }
 
-    public void showBooksAfterDeadLine(ArrayList <Book> books) {
+    public void showBooksAfterDeadLine(ArrayList<Book> books) {
         showBorrowedBooks(books);
     }
 
@@ -248,7 +259,7 @@ public class Display {
     }
 
     public boolean checkUserExist(User user) {
-        if(user == null) {
+        if (user == null) {
             System.out.println("Nie znaleziono użytkownika w bazie danych");
             return false;
         }
@@ -267,13 +278,13 @@ public class Display {
 
     public void checkUsernameAvailability(boolean status, String username) {
         if (!status) {
-            System.out.println("Nazwa użytkownika '"+ username +"' jest już zajęta.");
+            System.out.println("Nazwa użytkownika '" + username + "' jest już zajęta.");
         }
     }
 
-    public void  checkEmailAvailability(boolean status, String email) {
+    public void checkEmailAvailability(boolean status, String email) {
         if (!status) {
-            System.out.println("Email '"+ email +"' istnieje już w naszym systemie.");
+            System.out.println("Email '" + email + "' istnieje już w naszym systemie.");
         }
     }
 
@@ -297,7 +308,7 @@ public class Display {
     }
 
     public void showRegisterSucces() {
-            System.out.println("Rejestracja przebiegła pomyślnie.");
+        System.out.println("Rejestracja przebiegła pomyślnie.");
     }
 
     public void showNoDataRegisterMessage() {
@@ -312,11 +323,11 @@ public class Display {
         System.out.println("Jeżeli jesteś tu przypadkiem wciśnij enter w polu podania \nnazwy użytkownika, e-maila lub hasła. \nZarejestruj się ");
     }
 
-    public void showUserBooks(ArrayList <Book> borrowedBooks) {
-        System.out.printf("%-30s %-20s %-15s %-15s %-15s %-20s%n" ,"Tytuł", "Autor", "Rok wydania", "Wypożyczona", "Termin zwrotu", "Wypożycza");
+    public void showUserBooks(ArrayList<Book> borrowedBooks) {
+        System.out.printf("%-3s %-30s %-20s %-15s %-15s %-15s %-20s%n", "ID","Tytuł", "Autor", "Rok wydania", "Wypożyczona", "Termin zwrotu", "Wypożycza");
 
         borrowedBooks.forEach(
-                book -> System.out.printf("%-30s %-20s %-15d %-15s %-15s %-20s%n", book.getTitle(), book.getAuthor(), book.getYear(), dateToString(book.getBorrowDate()), dateToString(book.getDeadLine()), book.getBorrowedBy())
+                book -> System.out.printf("%-3s %-30s %-20s %-15d %-15s %-15s %-20s%n", book.getId(), book.getTitle(), book.getAuthor(), book.getYear(), dateToString(book.getBorrowDate()), dateToString(book.getDeadLine()), book.getBorrowedBy())
         );
     }
 
@@ -335,7 +346,7 @@ public class Display {
         return newRole;
     }
 
-    public void showChangeRoleResult(String username,Role newRole, boolean status) {
+    public void showChangeRoleResult(String username, Role newRole, boolean status) {
         if (status) {
             System.out.println("Pomyślnie zmieniono rolę użykownika " + username + " na " + newRole.toString().toLowerCase() + "a.");
         } else {
