@@ -23,11 +23,11 @@ public class Admin extends User {
 
             switch (choice) {
                 case "1" -> {
-                    display.showBooks(library.getBooks());
+                    display.showBooksAdmin(library.getBooks());
                     display.waitForAction();
                 }
                 case "2" -> {
-                    display.showBooks(library.getBorrowedBooks());
+                    display.showBooksAdmin(library.getBorrowedBooks());
                     display.waitForAction();
                 }
                 case "3" -> {
@@ -36,7 +36,7 @@ public class Admin extends User {
                     display.waitForAction();
                 }
                 case "4" -> {
-                    display.showBooks(library.getBooksAfterDeadline());
+                    display.showBooksAdmin(library.getBooksAfterDeadline());
                     display.waitForAction();
                 }
                 case "5" -> {
