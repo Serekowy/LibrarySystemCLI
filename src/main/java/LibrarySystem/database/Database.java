@@ -8,28 +8,18 @@ import LibrarySystem.model.NormalUser;
 import java.util.ArrayList;
 
 public class Database {
-    public ArrayList<User> users = new ArrayList<>();
     DatabaseManager databaseManager = new DatabaseManager();
 
     public void addUser(User user) {
-        users.add(user);
+        databaseManager.insertUser(user);
     }
 
     public ArrayList<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(ArrayList<User> users) {
-        this.users = users;
+        return databaseManager.selectUsers();
     }
 
     public User getUserByUsername(String username) {
-        for (User user : users) {
-            if (user.getUsername().equalsIgnoreCase(username)) {
-                return user;
-            }
-        }
-        return null;
+        return databaseManager.getUserByUsername(username);
     }
 
     public boolean passwordCompare(String password, String repeatPassword) {
@@ -37,7 +27,7 @@ public class Database {
     }
 
     public boolean checkUsernameAvailability(String username) {
-        for (User user : users) {
+        for (User user : databaseManager.selectUsers()) {
             if (user.getUsername().equalsIgnoreCase(username)) {
                 return false;
             }
@@ -46,7 +36,7 @@ public class Database {
     }
 
     public boolean checkEmailAvailability(String email) {
-        for (User user : users) {
+        for (User user : databaseManager.selectUsers()) {
             if (user.getEmail().equalsIgnoreCase(email)) {
                 return false;
             }
@@ -54,33 +44,31 @@ public class Database {
         return true;
     }
 
-    public boolean changeUserRole(String username, Role role) {
+    public boolean changeUserRole(int id, Role role) {
 
         if (role == null) {
             return false;
         }
 
+        ArrayList<User> users = databaseManager.selectUsers();
+
         for (int i = 0; i < users.size(); i++) {
             User user = users.get(i);
 
-            if (user.getUsername().equalsIgnoreCase(username)) {
+            if (user.getId() == id) {
                 switch (role) {
                     case USER -> {
                         if (user instanceof NormalUser) {
                             return false;
                         }
-                        NormalUser newUser = new NormalUser(user.getUsername(), user.getPassword(), user.getEmail(), Role.USER);
-                        users.set(i, newUser);
-                        databaseManager.updateRole(username, Role.USER);
+                        databaseManager.updateRole(id, Role.USER);
                         return true;
                     }
                     case ADMIN -> {
                         if (user instanceof Admin) {
                             return false;
                         }
-                        Admin newAdmin = new Admin(user.getUsername(), user.getPassword(), user.getEmail(), Role.ADMIN);
-                        users.set(i, newAdmin);
-                        databaseManager.updateRole(username, Role.ADMIN);
+                        databaseManager.updateRole(id, Role.ADMIN);
                         return true;
                     }
                     default -> {
