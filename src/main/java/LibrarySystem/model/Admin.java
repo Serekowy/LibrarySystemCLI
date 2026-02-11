@@ -64,9 +64,9 @@ public class Admin extends User {
                     display.waitForAction();
                 }
                 case "9" -> {
-                    String username = display.getUsername();
+                    int userId = display.getUserId();
                     Role newRole = display.getUserRole();
-                    display.showChangeRoleResult(username, newRole, database.changeUserRole(username, newRole));
+                    display.showChangeRoleResult(username, newRole, database.changeUserRole(userId, newRole));
                     display.waitForAction();
                 }
                 case "0" -> running = false;
