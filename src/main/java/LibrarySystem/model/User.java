@@ -6,12 +6,14 @@ import LibrarySystem.ui.Display;
 
 public abstract class User {
 
+    protected int id;
     protected String username;
     protected String password;
     protected String email;
     protected Role role;
 
     User(String username, String password, String email, Role role) {
+        this.id = 0;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -19,6 +21,14 @@ public abstract class User {
     }
 
     public abstract void runMenu(Library library, Display display, Database database);
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
