@@ -18,14 +18,12 @@ public class Main {
         Database database = new Database();
 
         databaseManager.connectAndCreateTables();
-        database.setUsers(databaseManager.selectUsers());
 
         boolean systemRunning = true;
 
         if (database.getUsers().isEmpty()) {
             Admin admin = new Admin("a", "a", "root@admin.com", Role.ADMIN);
             databaseManager.insertUser(admin);
-            database.setUsers(databaseManager.selectUsers());
         }
 
         while (systemRunning) {
@@ -99,7 +97,6 @@ public class Main {
                     if (isUsernameAvailable && isEmailAvailable && password.equals(repeatPassword)) {
                         User newUser = new NormalUser(username, password, email, Role.USER);
                         database.addUser(newUser);
-                        databaseManager.insertUser(newUser);
                         display.showRegisterSucces();
                     } else {
                         display.showRegisterError();
