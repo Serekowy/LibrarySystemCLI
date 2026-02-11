@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class DatabaseManager {
-    private static final String DB_URL = "jdbc:sqlite:test.db";
+    private static final String DB_URL = "jdbc:sqlite:library.db";
     private final Display display = new Display();
 
     public void connectAndCreateTables() {
@@ -103,9 +103,11 @@ public class DatabaseManager {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
 
+            int id;
             String username, password, email, role;
 
             while (rs.next()) {
+                id = rs.getInt("id");
                 username = rs.getString("username");
                 password = rs.getString("password");
                 email = rs.getString("email");
@@ -113,9 +115,11 @@ public class DatabaseManager {
 
                 if (role.equals("USER")) {
                     NormalUser user = new NormalUser(username, password, email, Role.USER);
+                    user.setId(id);
                     users.add(user);
                 } else if (role.equals("ADMIN")) {
                     Admin admin = new Admin(username, password, email, Role.ADMIN);
+                    admin.setId(id);
                     users.add(admin);
                 }
             }
@@ -203,13 +207,13 @@ public class DatabaseManager {
         }
     }
 
-    public void updateRole(String username, Role newRole) {
-        String sql = "UPDATE users SET role = ? WHERE username = ?";
+    public void updateRole(int id, Role newRole) {
+        String sql = "UPDATE users SET role = ? WHERE id = ?";
 
         try (Connection conn = DriverManager.getConnection(DB_URL)) {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, newRole.toString());
-            pstmt.setString(2, username);
+            pstmt.setInt(2, id);
             pstmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -240,6 +244,45 @@ public class DatabaseManager {
             display.showSQLError();
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    public User getUserByUsername(String username) {
+        String sql = "SELECT * FROM users WHERE username = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            int id;
+            String password, email, role;
+            Role roleObj;
+
+            if (rs.next()) {
+                id = rs.getInt("id");
+                password = rs.getString("password");
+                email = rs.getString("email");
+                role = rs.getString("role");
+                roleObj = Role.valueOf(role);
+
+                User user;
+
+                if (roleObj == Role.ADMIN) {
+                    user = new Admin(username, password, email, roleObj);
+                } else {
+                    user = new NormalUser(username, password, email, roleObj);
+                }
+                user.setId(id);
+                return user;
+            }
+
+        } catch (SQLException e) {
+            display.showSQLError();
+            throw new RuntimeException(e.getMessage());
+        }
+
+        return null;
     }
 
     public void clearDatabase() {
