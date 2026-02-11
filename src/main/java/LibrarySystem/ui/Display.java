@@ -156,20 +156,10 @@ public class Display {
         while (true) {
             try {
                 System.out.print("Podaj ID książki:");
-                String input = scanner.nextLine();
-
-                if (input.isEmpty()) return -1;
-
-                int id = Integer.parseInt(input);
-
-                if (id < 0 || 9999 < id) {
-                    throw new NumberFormatException();
-                }
-
-                return id;
+                return getCorrectId();
 
             } catch (NumberFormatException e) {
-                System.out.println("Podane ID musi być w zakresie od 1 do 9999.");
+                System.out.println("Podane ID musi być w zakresie od 0 do 9999.");
             }
         }
     }
@@ -241,6 +231,32 @@ public class Display {
     public String getUsername() {
         System.out.print("Podaj nazwę użytkownika: ");
         return scanner.nextLine();
+    }
+
+    public int getUserId() {
+        while (true) {
+            try {
+                System.out.print("Podaj ID użytkownika: ");
+                return getCorrectId();
+
+            } catch (NumberFormatException e) {
+                System.out.println("Podane ID musi być w zakresie od 1 do 9999.");
+            }
+        }
+    }
+
+    private int getCorrectId() {
+        String input = scanner.nextLine();
+
+        if (input.isEmpty()) return -1;
+
+        int id = Integer.parseInt(input);
+
+        if (id < 0 || 9999 < id) {
+            throw new NumberFormatException();
+        }
+
+        return id;
     }
 
     public String getPassword() {
