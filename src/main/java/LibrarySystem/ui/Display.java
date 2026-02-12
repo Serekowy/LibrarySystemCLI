@@ -39,6 +39,7 @@ public class Display {
         System.out.println("7. Usuń książkę ");
         System.out.println("8. Zmień termin oddania książki");
         System.out.println("9. Zmień rolę");
+        System.out.println("10. Wyświetl użytkowników");
         System.out.println("0. Wyloguj się");
         System.out.print("Wybór:");
 
@@ -362,12 +363,20 @@ public class Display {
         return newRole;
     }
 
-    public void showChangeRoleResult(String username, Role newRole, boolean status) {
+    public void showChangeRoleResult(int userId, Role newRole, boolean status) {
         if (status) {
-            System.out.println("Pomyślnie zmieniono rolę użykownika " + username + " na " + newRole.toString().toLowerCase() + "a.");
+            System.out.println("Pomyślnie zmieniono rolę użykownika o " + userId + " na " + newRole.toString().toLowerCase() + "a.");
         } else {
             System.out.println("Nie udało się zmienić roli użytkownika, spróbuj ponownie.");
         }
+    }
+
+    public void showUsers(ArrayList<User> users) {
+        System.out.printf("%-3s %-20s %-30s %-15s%n", "ID","Nazwa użytkownika", "Email", "Rola");
+
+        users.forEach(
+                user -> System.out.printf("%-3s %-20s %-30s %-15s%n", user.getId(), user.getUsername(), user.getEmail(), user.getRole().toString())
+        );
     }
     //db
 
@@ -382,5 +391,4 @@ public class Display {
     public void showSQLError() {
         System.out.println("Nie udało się pomyślnie wykonać zapytania do bazy danych.");
     }
-
 }
