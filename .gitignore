@@ -46,3 +46,4 @@ build/
 /identifier.sqlite
 /library.db
 /.idea/sqldialects.xml
+/test.db
