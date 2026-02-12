@@ -1,7 +1,7 @@
 package LibrarySystem.model;
 
-import LibrarySystem.database.Database;
-import LibrarySystem.service.Library;
+import LibrarySystem.service.BookService;
+import LibrarySystem.service.UserService;
 import LibrarySystem.ui.Display;
 
 public abstract class User {
@@ -20,7 +20,7 @@ public abstract class User {
         this.role = role;
     }
 
-    public abstract void runMenu(Library library, Display display, Database database);
+    public abstract void runMenu(BookService bookService, Display display, UserService userService);
 
     public int getId() {
         return id;

@@ -3,10 +3,10 @@ package LibrarySystem.model;
 import java.time.LocalDate;
 
 public class Book {
-    private int id;
     private final String title;
     private final String author;
     private final Integer year;
+    private int id;
     private boolean available;
     private String borrowedBy;
     private LocalDate borrowDate;

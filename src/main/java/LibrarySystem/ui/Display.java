@@ -341,7 +341,7 @@ public class Display {
     }
 
     public void showUserBooks(ArrayList<Book> borrowedBooks) {
-        System.out.printf("%-3s %-30s %-20s %-15s %-15s %-15s %-20s%n", "ID","Tytuł", "Autor", "Rok wydania", "Wypożyczona", "Termin zwrotu", "Wypożycza");
+        System.out.printf("%-3s %-30s %-20s %-15s %-15s %-15s %-20s%n", "ID", "Tytuł", "Autor", "Rok wydania", "Wypożyczona", "Termin zwrotu", "Wypożycza");
 
         borrowedBooks.forEach(
                 book -> System.out.printf("%-3s %-30s %-20s %-15d %-15s %-15s %-20s%n", book.getId(), book.getTitle(), book.getAuthor(), book.getYear(), dateToString(book.getBorrowDate()), dateToString(book.getDeadLine()), book.getBorrowedBy())
@@ -372,7 +372,7 @@ public class Display {
     }
 
     public void showUsers(ArrayList<User> users) {
-        System.out.printf("%-3s %-20s %-30s %-15s%n", "ID","Nazwa użytkownika", "Email", "Rola");
+        System.out.printf("%-3s %-20s %-30s %-15s%n", "ID", "Nazwa użytkownika", "Email", "Rola");
 
         users.forEach(
                 user -> System.out.printf("%-3s %-20s %-30s %-15s%n", user.getId(), user.getUsername(), user.getEmail(), user.getRole().toString())

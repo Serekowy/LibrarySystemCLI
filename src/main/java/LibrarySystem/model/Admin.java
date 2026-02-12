@@ -1,7 +1,7 @@
 package LibrarySystem.model;
 
-import LibrarySystem.database.Database;
-import LibrarySystem.service.Library;
+import LibrarySystem.service.BookService;
+import LibrarySystem.service.UserService;
 import LibrarySystem.ui.Display;
 
 import java.time.LocalDate;
@@ -13,7 +13,7 @@ public class Admin extends User {
     }
 
     @Override
-    public void runMenu(Library library, Display display, Database database) {
+    public void runMenu(BookService bookService, Display display, UserService userService) {
         boolean running = true;
 
         while (running) {
@@ -23,54 +23,54 @@ public class Admin extends User {
 
             switch (choice) {
                 case "1" -> {
-                    display.showBooksAdmin(library.getBooks());
+                    display.showBooksAdmin(bookService.getBooks());
                     display.waitForAction();
                 }
                 case "2" -> {
-                    display.showBooksAdmin(library.getBorrowedBooks());
+                    display.showBooksAdmin(bookService.getBorrowedBooks());
                     display.waitForAction();
                 }
                 case "3" -> {
                     String username = display.getUsername();
-                    display.showUserBooks(library.getBooksByUsername(username));
+                    display.showUserBooks(bookService.getBooksByUsername(username));
                     display.waitForAction();
                 }
                 case "4" -> {
-                    display.showBooksAdmin(library.getBooksAfterDeadline());
+                    display.showBooksAdmin(bookService.getBooksAfterDeadline());
                     display.waitForAction();
                 }
                 case "5" -> {
                     String username = display.getUsername();
-                    display.showUserBooks(library.getBooksAfterDeadlineByUsername(username));
+                    display.showUserBooks(bookService.getBooksAfterDeadlineByUsername(username));
                     display.waitForAction();
                 }
                 case "6" -> {
                     Book newBook = display.addBook();
                     if (newBook == null) break;
                     else {
-                        display.showAddBookResult(library.addBook(newBook));
+                        display.showAddBookResult(bookService.addBook(newBook));
                         display.waitForAction();
                     }
                 }
                 case "7" -> {
                     int bookId = display.getBookId();
-                    display.removeBook(library.removeBook(bookId), bookId);
+                    display.removeBook(bookService.removeBook(bookId), bookId);
                     display.waitForAction();
                 }
                 case "8" -> {
                     int bookId = display.getBookId();
                     LocalDate inputDate = display.getLocalDate();
-                    display.showChangeDeadLineStatus(library.changeDeadLine(bookId, inputDate), bookId);
+                    display.showChangeDeadLineStatus(bookService.changeDeadLine(bookId, inputDate), bookId);
                     display.waitForAction();
                 }
                 case "9" -> {
                     int userId = display.getUserId();
                     Role newRole = display.getUserRole();
-                    display.showChangeRoleResult(userId, newRole, database.changeUserRole(userId, newRole));
+                    display.showChangeRoleResult(userId, newRole, userService.changeUserRole(userId, newRole));
                     display.waitForAction();
                 }
                 case "10" -> {
-                    display.showUsers(database.getUsers());
+                    display.showUsers(userService.getUsers());
                     display.waitForAction();
                 }
                 case "0" -> running = false;

@@ -1,27 +1,27 @@
 package LibrarySystem;
 
-import LibrarySystem.database.Database;
+import LibrarySystem.service.BookService;
+import LibrarySystem.service.UserService;
 import LibrarySystem.database.DatabaseManager;
 import LibrarySystem.model.Admin;
 import LibrarySystem.model.NormalUser;
 import LibrarySystem.model.Role;
 import LibrarySystem.model.User;
-import LibrarySystem.service.Library;
 import LibrarySystem.ui.Display;
 
 public class Main {
     public static void main(String[] args) {
 
         DatabaseManager databaseManager = new DatabaseManager();
-        Library library = new Library();
+        BookService bookService = new BookService(databaseManager);
         Display display = new Display();
-        Database database = new Database();
+        UserService userService = new UserService(databaseManager);
 
         databaseManager.connectAndCreateTables();
 
         boolean systemRunning = true;
 
-        if (database.getUsers().isEmpty()) {
+        if (databaseManager.getUserByUsername("a") == null) {
             Admin admin = new Admin("a", "a", "root@admin.com", Role.ADMIN);
             databaseManager.insertUser(admin);
         }
@@ -46,7 +46,7 @@ public class Main {
                             break;
                         }
 
-                        User loggingUser = database.getUserByUsername(username);
+                        User loggingUser = userService.getUserByUsername(username);
 
                         if (!display.checkUserExist(loggingUser)) {
                             display.waitForAction();
@@ -60,7 +60,7 @@ public class Main {
                         }
                     }
                     if (currentUser != null) {
-                        currentUser.runMenu(library, display, database);
+                        currentUser.runMenu(bookService, display, userService);
                     } else {
                         display.showNoDataRegisterMessage();
                     }
@@ -69,7 +69,7 @@ public class Main {
                     display.showRegisterMessage();
 
                     String username = display.getUsername();
-                    boolean isUsernameAvailable = database.checkUsernameAvailability(username);
+                    boolean isUsernameAvailable = userService.checkUsernameAvailability(username);
 
                     if (username.isBlank()) {
                         display.showNoDataRegisterMessage();
@@ -77,7 +77,7 @@ public class Main {
                     }
 
                     String email = display.getEmail();
-                    boolean isEmailAvailable = database.checkEmailAvailability(email);
+                    boolean isEmailAvailable = userService.checkEmailAvailability(email);
 
                     if (email.isBlank()) {
                         display.showNoDataRegisterMessage();
@@ -96,13 +96,13 @@ public class Main {
 
                     if (isUsernameAvailable && isEmailAvailable && password.equals(repeatPassword)) {
                         User newUser = new NormalUser(username, password, email, Role.USER);
-                        database.addUser(newUser);
+                        userService.addUser(newUser);
                         display.showRegisterSucces();
                     } else {
                         display.showRegisterError();
                         display.checkUsernameAvailability(isUsernameAvailable, username);
                         display.checkEmailAvailability(isEmailAvailable, email);
-                        display.passwordMatch(database.passwordCompare(password, repeatPassword));
+                        display.passwordMatch(userService.passwordCompare(password, repeatPassword));
                     }
 
                     display.waitForAction();

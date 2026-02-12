@@ -1,7 +1,7 @@
 package LibrarySystem.model;
 
-import LibrarySystem.database.Database;
-import LibrarySystem.service.Library;
+import LibrarySystem.service.BookService;
+import LibrarySystem.service.UserService;
 import LibrarySystem.ui.Display;
 
 public class NormalUser extends User {
@@ -11,7 +11,7 @@ public class NormalUser extends User {
     }
 
     @Override
-    public void runMenu(Library library, Display display, Database database) {
+    public void runMenu(BookService bookService, Display display, UserService userService) {
         boolean running = true;
 
         while (running) {
@@ -20,26 +20,26 @@ public class NormalUser extends User {
 
             switch (choice) {
                 case "1" -> {
-                    display.showBooks(library.getBooks());
+                    display.showBooks(bookService.getBooks());
                     display.waitForAction();
                 }
                 case "2" -> {
                     String bookTitle = display.getBookTitle();
                     String borrowedBy = username;
-                    display.showBookBorrowResult(library.borrowBook(bookTitle, borrowedBy), bookTitle);
+                    display.showBookBorrowResult(bookService.borrowBook(bookTitle, borrowedBy), bookTitle);
                     display.waitForAction();
                 }
                 case "3" -> {
                     String bookTitle = display.getBookTitle();
-                    display.showBookReturnResult(library.returnBook(bookTitle), bookTitle);
+                    display.showBookReturnResult(bookService.returnBook(bookTitle), bookTitle);
                     display.waitForAction();
                 }
                 case "4" -> {
-                    display.showBorrowedBooks(library.getBooksByUsername(getUsername()));
+                    display.showBorrowedBooks(bookService.getBooksByUsername(getUsername()));
                     display.waitForAction();
                 }
                 case "5" -> {
-                    display.showBooksAfterDeadLine(library.getBooksAfterDeadlineByUsername(getUsername()));
+                    display.showBooksAfterDeadLine(bookService.getBooksAfterDeadlineByUsername(getUsername()));
                     display.waitForAction();
                 }
                 case "0" -> running = false;
