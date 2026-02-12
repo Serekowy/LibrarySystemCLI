@@ -27,57 +27,23 @@ public class Database {
     }
 
     public boolean checkUsernameAvailability(String username) {
-        for (User user : databaseManager.selectUsers()) {
-            if (user.getUsername().equalsIgnoreCase(username)) {
-                return false;
-            }
-        }
-        return true;
+        return databaseManager.getUserByUsername(username) == null;
     }
 
     public boolean checkEmailAvailability(String email) {
-        for (User user : databaseManager.selectUsers()) {
-            if (user.getEmail().equalsIgnoreCase(email)) {
-                return false;
-            }
-        }
-        return true;
+        return !databaseManager.emailExists(email);
     }
 
     public boolean changeUserRole(int id, Role role) {
+        if (role == null) return false;
 
-        if (role == null) {
-            return false;
-        }
+        User user = databaseManager.getUserById(id);
+        if (user == null) return false;
 
-        ArrayList<User> users = databaseManager.selectUsers();
+        if (role == Role.USER && user instanceof NormalUser) return false;
+        if (role == Role.ADMIN && user instanceof Admin) return false;
 
-        for (int i = 0; i < users.size(); i++) {
-            User user = users.get(i);
-
-            if (user.getId() == id) {
-                switch (role) {
-                    case USER -> {
-                        if (user instanceof NormalUser) {
-                            return false;
-                        }
-                        databaseManager.updateRole(id, Role.USER);
-                        return true;
-                    }
-                    case ADMIN -> {
-                        if (user instanceof Admin) {
-                            return false;
-                        }
-                        databaseManager.updateRole(id, Role.ADMIN);
-                        return true;
-                    }
-                    default -> {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return false;
+        databaseManager.updateRole(id, role);
+        return true;
     }
 }
