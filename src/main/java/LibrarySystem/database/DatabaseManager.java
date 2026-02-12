@@ -105,6 +105,7 @@ public class DatabaseManager {
 
             int id;
             String username, password, email, role;
+            Role roleObj;
 
             while (rs.next()) {
                 id = rs.getInt("id");
@@ -113,11 +114,13 @@ public class DatabaseManager {
                 email = rs.getString("email");
                 role = rs.getString("role");
 
-                if (role.equals("USER")) {
+                roleObj = Role.valueOf(role);
+
+                if (roleObj == Role.USER) {
                     NormalUser user = new NormalUser(username, password, email, Role.USER);
                     user.setId(id);
                     users.add(user);
-                } else if (role.equals("ADMIN")) {
+                } else if (roleObj == Role.ADMIN) {
                     Admin admin = new Admin(username, password, email, Role.ADMIN);
                     admin.setId(id);
                     users.add(admin);
@@ -300,5 +303,50 @@ public class DatabaseManager {
         } catch (SQLException e) {
             System.out.println("Błąd podczas czyszczenia bazy testowej: " + e.getMessage());
         }
+    }
+
+    public boolean emailExists(String email) {
+        String sql = "SELECT 1 FROM users WHERE email = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, email);
+            ResultSet rs = pstmt.executeQuery();
+
+            return rs.next();
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public User getUserById(int id) {
+        String sql = "SELECT * FROM users WHERE id = ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+
+            String username, password, email;
+            Role roleObj;
+
+            if (rs.next()) {
+                username = rs.getString("username");
+                password = rs.getString("password");
+                email = rs.getString("email");
+                roleObj = Role.valueOf(rs.getString("role"));
+
+                User user = (roleObj == Role.ADMIN)
+                        ? new Admin(username, password, email, roleObj)
+                        : new NormalUser(username, password, email, roleObj);
+
+                user.setId(id);
+                return user;
+            }
+        } catch (SQLException e) {
+            display.showSQLError();
+        }
+        return null;
     }
 }
