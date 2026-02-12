@@ -7,10 +7,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-public class Library {
+public class BookService {
 
     private static final int BOOK_BORROW_TIME = 7;
-    DatabaseManager databaseManager = new DatabaseManager();
+    private final DatabaseManager databaseManager;
+
+    public BookService(DatabaseManager databaseManager) {
+        this.databaseManager = databaseManager;
+    }
 
     public boolean addBook(Book book) {
         try {

@@ -5,7 +5,7 @@ import LibrarySystem.model.Book;
 import LibrarySystem.model.NormalUser;
 import LibrarySystem.model.Role;
 import LibrarySystem.model.User;
-import LibrarySystem.service.Library;
+import LibrarySystem.service.BookService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,14 +13,14 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class LibraryTest {
+class BookServiceTest {
 
-    private Library library;
     private final DatabaseManager databaseManager = new DatabaseManager();
+    private BookService bookService;
 
     @BeforeEach
     void setUp() {
-        library = new Library();
+        bookService = new BookService(databaseManager);
         databaseManager.connectAndCreateTables();
         databaseManager.clearDatabase();
     }
@@ -30,12 +30,12 @@ class LibraryTest {
         String title = "Harry Potter";
 
         Book book = new Book(title, "Rowling", 2000);
-        boolean result = library.addBook(book);
+        boolean result = bookService.addBook(book);
 
-        Book bookInDb = returnBookFromDb(title, library);
+        Book bookInDb = returnBookFromDb(title, bookService);
 
         assertTrue(result);
-        assertEquals(1, library.getBooks().size());
+        assertEquals(1, bookService.getBooks().size());
         assertTrue(bookInDb.getId() > 0);
     }
 
@@ -44,12 +44,12 @@ class LibraryTest {
         String title = "Harry Potter";
 
         Book book = new Book(title, "Rowling", 2000);
-        library.addBook(book);
+        bookService.addBook(book);
 
-        Book bookInDb = returnBookFromDb(title, library);
+        Book bookInDb = returnBookFromDb(title, bookService);
 
-        assertTrue(library.removeBook(bookInDb.getId()));
-        assertEquals(0, library.getBooks().size());
+        assertTrue(bookService.removeBook(bookInDb.getId()));
+        assertEquals(0, bookService.getBooks().size());
     }
 
     @Test
@@ -57,16 +57,16 @@ class LibraryTest {
         String title = "Harry Potter";
 
         Book book = new Book(title, "Rowling", 2000);
-        library.addBook(book);
+        bookService.addBook(book);
 
         User user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
         databaseManager.insertUser(user);
 
-        boolean result = library.borrowBook("Harry Potter", "Uzytkownik");
+        boolean result = bookService.borrowBook("Harry Potter", "Uzytkownik");
         assertTrue(result);
 
         User userInDb = returnUserFromDb(user.getUsername(), databaseManager.selectUsers());
-        Book bookInDb = returnBookFromDb(title, library);
+        Book bookInDb = returnBookFromDb(title, bookService);
 
         assertFalse(bookInDb.isAvailable());
         assertNotEquals(null, bookInDb.getBorrowDate());
@@ -80,7 +80,7 @@ class LibraryTest {
 
         Book book = new Book(title, "Rowling", 2000);
 
-        library.addBook(book);
+        bookService.addBook(book);
 
         User user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
         User user1 = new NormalUser("InnyUzytkownik", "123", "inny@gmail.com", Role.USER);
@@ -90,12 +90,12 @@ class LibraryTest {
         User userInDb = returnUserFromDb(user.getUsername(), databaseManager.selectUsers());
         User userInDb1 = returnUserFromDb(user1.getUsername(), databaseManager.selectUsers());
 
-        library.borrowBook(book.getTitle(), userInDb.getUsername());
-        boolean result = library.borrowBook(title, userInDb1.getUsername());
+        bookService.borrowBook(book.getTitle(), userInDb.getUsername());
+        boolean result = bookService.borrowBook(title, userInDb1.getUsername());
 
         assertFalse(result);
 
-        Book bookInDb = returnBookFromDb(title, library);
+        Book bookInDb = returnBookFromDb(title, bookService);
 
         assertEquals(userInDb.getUsername(), bookInDb.getBorrowedBy());
     }
@@ -105,18 +105,18 @@ class LibraryTest {
         String title = "Harry Potter";
 
         Book book = new Book(title, "Rowling", 2000);
-        library.addBook(book);
+        bookService.addBook(book);
 
         User user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
         databaseManager.insertUser(user);
 
         User userInDb = returnUserFromDb(user.getUsername(), databaseManager.selectUsers());
 
-        library.borrowBook(title, userInDb.getUsername());
+        bookService.borrowBook(title, userInDb.getUsername());
 
-        boolean result = library.returnBook(title);
+        boolean result = bookService.returnBook(title);
 
-        Book bookInDb = returnBookFromDb(title, library);
+        Book bookInDb = returnBookFromDb(title, bookService);
 
         assertTrue(result);
         assertTrue(bookInDb.isAvailable());
@@ -126,14 +126,14 @@ class LibraryTest {
         assertNotEquals(userInDb.getUsername(), bookInDb.getBorrowedBy());
     }
 
-    private Book returnBookFromDb(String title, Library library) {
-        return library.getBooks().stream()
+    private Book returnBookFromDb(String title, BookService bookService) {
+        return bookService.getBooks().stream()
                 .filter(b -> b.getTitle().equals(title))
                 .findFirst()
                 .orElseThrow();
     }
 
-    private User  returnUserFromDb(String username, ArrayList<User> users) {
+    private User returnUserFromDb(String username, ArrayList<User> users) {
         return users.stream()
                 .filter(u -> u.getUsername().equals(username))
                 .findFirst()
