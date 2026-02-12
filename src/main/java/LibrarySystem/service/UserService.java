@@ -1,5 +1,6 @@
-package LibrarySystem.database;
+package LibrarySystem.service;
 
+import LibrarySystem.database.DatabaseManager;
 import LibrarySystem.model.Role;
 import LibrarySystem.model.User;
 import LibrarySystem.model.Admin;
@@ -7,8 +8,12 @@ import LibrarySystem.model.NormalUser;
 
 import java.util.ArrayList;
 
-public class Database {
-    DatabaseManager databaseManager = new DatabaseManager();
+public class UserService {
+    private final DatabaseManager databaseManager;
+
+    public UserService(DatabaseManager databaseManager) {
+        this.databaseManager = databaseManager;
+    }
 
     public void addUser(User user) {
         databaseManager.insertUser(user);
