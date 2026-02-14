@@ -4,6 +4,8 @@ import LibrarySystem.service.BookService;
 import LibrarySystem.service.UserService;
 import LibrarySystem.ui.Display;
 
+import java.util.ArrayList;
+
 public class NormalUser extends User {
 
     public NormalUser(String username, String password, String email, Role role) {
@@ -25,13 +27,22 @@ public class NormalUser extends User {
                 }
                 case "2" -> {
                     String bookTitle = display.getBookTitle();
-                    String borrowedBy = username;
-                    display.showBookBorrowResult(bookService.borrowBook(bookTitle, borrowedBy), bookTitle);
+                    ArrayList<Book> booksByTitle = bookService.getBooksByTitle(bookTitle);
+
+                    display.showBooksWithID(booksByTitle);
+
+                    if(!booksByTitle.isEmpty()){
+                        int bookId = display.getBookId();
+                        String borrowedBy = username;
+
+                        display.showBookBorrowResult(bookService.borrowBook(bookId, borrowedBy), bookTitle);
+                    }
+
                     display.waitForAction();
                 }
                 case "3" -> {
-                    String bookTitle = display.getBookTitle();
-                    display.showBookReturnResult(bookService.returnBook(bookTitle), bookTitle);
+                    int bookId = display.getBookId();
+                    display.showBookReturnResult(bookService.returnBook(bookId), bookId);
                     display.waitForAction();
                 }
                 case "4" -> {
