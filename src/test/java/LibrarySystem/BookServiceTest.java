@@ -15,14 +15,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BookServiceTest {
 
-    private final DatabaseManager databaseManager = new DatabaseManager();
+    private DatabaseManager databaseManager;
     private BookService bookService;
 
     @BeforeEach
     void setUp() {
-        bookService = new BookService(databaseManager);
+        databaseManager = new DatabaseManager();
         databaseManager.connectAndCreateTables();
         databaseManager.clearDatabase();
+
+        bookService = new BookService(databaseManager);
     }
 
     @Test
@@ -62,7 +64,7 @@ class BookServiceTest {
         User user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
         databaseManager.insertUser(user);
 
-        boolean result = bookService.borrowBook("Harry Potter", "Uzytkownik");
+        boolean result = bookService.borrowBook(1, "Uzytkownik");
         assertTrue(result);
 
         User userInDb = returnUserFromDb(user.getUsername(), databaseManager.selectUsers());
@@ -90,8 +92,8 @@ class BookServiceTest {
         User userInDb = returnUserFromDb(user.getUsername(), databaseManager.selectUsers());
         User userInDb1 = returnUserFromDb(user1.getUsername(), databaseManager.selectUsers());
 
-        bookService.borrowBook(book.getTitle(), userInDb.getUsername());
-        boolean result = bookService.borrowBook(title, userInDb1.getUsername());
+        bookService.borrowBook(book.getId(), userInDb.getUsername());
+        boolean result = bookService.borrowBook(book.getId(), userInDb1.getUsername());
 
         assertFalse(result);
 
@@ -112,9 +114,9 @@ class BookServiceTest {
 
         User userInDb = returnUserFromDb(user.getUsername(), databaseManager.selectUsers());
 
-        bookService.borrowBook(title, userInDb.getUsername());
+        bookService.borrowBook(1, userInDb.getUsername());
 
-        boolean result = bookService.returnBook(title);
+        boolean result = bookService.returnBook(1);
 
         Book bookInDb = returnBookFromDb(title, bookService);
 
