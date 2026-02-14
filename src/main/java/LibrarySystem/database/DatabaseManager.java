@@ -349,4 +349,40 @@ public class DatabaseManager {
         }
         return null;
     }
+
+    public ArrayList<Book> selectBooksByTitle(String searchTitle) {
+        ArrayList<Book> books = new ArrayList<>();
+        String sql = "SELECT * FROM books WHERE title LIKE ?";
+
+        try (Connection conn = DriverManager.getConnection(DB_URL)) {
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, "%" + searchTitle + "%");
+            ResultSet rs = pstmt.executeQuery();
+
+            boolean available;
+            int id, year;
+            String title, author;
+
+            while (rs.next()) {
+                title = rs.getString("title");
+                author = rs.getString("author");
+                available = rs.getBoolean("available");
+                id = rs.getInt("id");
+                year = rs.getInt("year");
+
+                Book book = new Book(title, author, year);
+                book.setAvailable(available);
+                book.setId(id);
+                books.add(book);
+            }
+
+            return books;
+
+
+        } catch (SQLException e) {
+            display.showSQLError();
+            return null;
+        }
+    }
 }
