@@ -37,10 +37,9 @@ public class BookService {
         return false;
     }
 
-    //TODO jeżeli są dwie takie same książki, to wtedy wyświetlić pole autora żeby wypożyczyć odpowiednią dodatkowo może książki po id wtedy poprawnie by było
-    public boolean borrowBook(String bookTitle, String username) {
+    public boolean borrowBook(int bookId, String username) {
         for (Book book : getBooks()) {
-            if (book.getTitle().equalsIgnoreCase(bookTitle) && book.isAvailable()) {
+            if (book.getId() == bookId && book.isAvailable()) {
                 book.setAvailable(false);
                 book.setBorrowDate(LocalDate.now());
                 book.setDeadline(book.getBorrowDate().plusDays(BOOK_BORROW_TIME));
@@ -52,9 +51,9 @@ public class BookService {
         return false;
     }
 
-    public boolean returnBook(String bookTitle) {
+    public boolean returnBook(int bookId) {
         for (Book book : getBooks()) {
-            if (book.getTitle().equalsIgnoreCase(bookTitle) && !book.isAvailable()) {
+            if (book.getId() == bookId && !book.isAvailable()) {
                 book.setAvailable(true);
                 book.setBorrowDate(null);
                 book.setDeadline(null);
@@ -68,6 +67,10 @@ public class BookService {
 
     public ArrayList<Book> getBooks() {
         return databaseManager.selectBooks();
+    }
+
+    public ArrayList<Book> getBooksByTitle(String title) {
+        return databaseManager.selectBooksByTitle(title);
     }
 
     public ArrayList<Book> getBorrowedBooks() {
