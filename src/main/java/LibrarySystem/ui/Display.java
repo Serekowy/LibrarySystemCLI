@@ -124,22 +124,26 @@ public class Display {
         );
     }
 
-    public void showBooksAdmin(ArrayList<Book> books) {
-        System.out.printf("%-3s %-30s %-20s %-15s %s%n", "ID", "Tytuł", "Autor", "Rok wydania", "Dostępna");
+    public void showBooksWithID(ArrayList<Book> books) {
+        if (books.isEmpty()) {
+            System.out.println("Nie ma książek o podobnym tytule.");
+        } else {
+            System.out.printf("%-3s %-30s %-20s %-15s %s%n", "ID", "Tytuł", "Autor", "Rok wydania", "Dostępna");
 
-        books.forEach(
-                book -> {
-                    String borrowed = (book.isAvailable()) ? "Tak" : "Nie";
-                    System.out.printf("%-3s %-30s %-20s %-15d %s%n", book.getId(), book.getTitle(), book.getAuthor(), book.getYear(), borrowed);
-                }
-        );
+            books.forEach(
+                    book -> {
+                        String borrowed = (book.isAvailable()) ? "Tak" : "Nie";
+                        System.out.printf("%-3s %-30s %-20s %-15d %s%n", book.getId(), book.getTitle(), book.getAuthor(), book.getYear(), borrowed);
+                    }
+            );
+        }
     }
 
     public void showBorrowedBooks(ArrayList<Book> borrowedBooks) {
-        System.out.printf("%-30s %-20s %-15s %-15s %-15s%n", "Tytuł", "Autor", "Rok wydania", "Wypożyczona", "Termin zwrotu");
+        System.out.printf("%-3s %-30s %-20s %-15s %-15s %-15s%n", "ID", "Tytuł", "Autor", "Rok wydania", "Wypożyczona", "Termin zwrotu");
 
         borrowedBooks.forEach(
-                book -> System.out.printf("%-30s %-20s %-15d %-15s %-15s%n", book.getTitle(), book.getAuthor(), book.getYear(), dateToString(book.getBorrowDate()), dateToString(book.getDeadLine()))
+                book -> System.out.printf("%-3s %-30s %-20s %-15d %-15s %-15s%n", book.getId(),book.getTitle(), book.getAuthor(), book.getYear(), dateToString(book.getBorrowDate()), dateToString(book.getDeadLine()))
         );
     }
 
@@ -173,11 +177,11 @@ public class Display {
         }
     }
 
-    public void showBookReturnResult(boolean returned, String bookTitle) {
+    public void showBookReturnResult(boolean returned, int bookId) {
         if (returned) {
-            System.out.println("Książka '" + bookTitle + "' została pomyślnie zwrócona");
+            System.out.println("Książka o ID '" + bookId + "' została pomyślnie zwrócona");
         } else {
-            System.out.println("Podany tytuł jest błędny lub książka nie była wypożyczona");
+            System.out.println("Podane ID jest błędne lub książka nie była wypożyczona");
         }
     }
 
@@ -224,7 +228,7 @@ public class Display {
     public void showSystemMenu() {
         System.out.println("Menu systemu");
         System.out.println("1. Zaloguj się.");
-        System.out.println("2. Zarejestruj się."); //TODO
+        System.out.println("2. Zarejestruj się.");
         System.out.println("0. Zamknij program");
         System.out.print("Wybór: ");
     }
