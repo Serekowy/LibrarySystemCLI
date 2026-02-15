@@ -30,7 +30,6 @@ class BookServiceTest {
     @Test
     void shouldAddBook() {
         String title = "Harry Potter";
-
         Book book = new Book(title, "Rowling", 2000);
         boolean result = bookService.addBook(book);
 
@@ -44,7 +43,6 @@ class BookServiceTest {
     @Test
     void shouldRemoveBook() {
         String title = "Harry Potter";
-
         Book book = new Book(title, "Rowling", 2000);
         bookService.addBook(book);
 
@@ -57,47 +55,47 @@ class BookServiceTest {
     @Test
     void shouldBorrowBook() {
         String title = "Harry Potter";
-
         Book book = new Book(title, "Rowling", 2000);
         bookService.addBook(book);
 
         User user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
         databaseManager.insertUser(user);
 
-        boolean result = bookService.borrowBook(1, "Uzytkownik");
-        assertTrue(result);
-
-        User userInDb = returnUserFromDb(user.getUsername(), databaseManager.selectUsers());
         Book bookInDb = returnBookFromDb(title, bookService);
 
+        boolean result = bookService.borrowBook(bookInDb.getId(), "Uzytkownik");
+        assertTrue(result);
+
+        User userInDb = databaseManager.getUserByUsername(user.getUsername());
+
+        bookInDb = returnBookFromDb(title, bookService);
+
         assertFalse(bookInDb.isAvailable());
-        assertNotEquals(null, bookInDb.getBorrowDate());
-        assertNotEquals(null, bookInDb.getDeadLine());
+        assertNotNull(bookInDb.getBorrowDate());
+        assertNotNull(bookInDb.getDeadLine());
         assertEquals(userInDb.getUsername(), bookInDb.getBorrowedBy());
     }
 
     @Test
     void shouldNotBorrowBorrowedBook() {
         String title = "Harry Potter";
-
         Book book = new Book(title, "Rowling", 2000);
-
         bookService.addBook(book);
 
         User user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
-        User user1 = new NormalUser("InnyUzytkownik", "123", "inny@gmail.com", Role.USER);
         databaseManager.insertUser(user);
+        User user1 = new NormalUser("InnyUzytkownik", "123", "inny@gmail.com", Role.USER);
         databaseManager.insertUser(user1);
 
-        User userInDb = returnUserFromDb(user.getUsername(), databaseManager.selectUsers());
-        User userInDb1 = returnUserFromDb(user1.getUsername(), databaseManager.selectUsers());
-
-        bookService.borrowBook(book.getId(), userInDb.getUsername());
-        boolean result = bookService.borrowBook(book.getId(), userInDb1.getUsername());
-
-        assertFalse(result);
+        User userInDb = databaseManager.getUserByUsername(user.getUsername());
+        User userInDb1 = databaseManager.getUserByUsername(user1.getUsername());
 
         Book bookInDb = returnBookFromDb(title, bookService);
+        bookService.borrowBook(bookInDb.getId(), userInDb.getUsername());
+        bookInDb = returnBookFromDb(title, bookService);
+
+        boolean result = bookService.borrowBook(bookInDb.getId(), userInDb1.getUsername());
+        assertFalse(result);
 
         assertEquals(userInDb.getUsername(), bookInDb.getBorrowedBy());
     }
@@ -105,20 +103,18 @@ class BookServiceTest {
     @Test
     void shouldReturnBook() {
         String title = "Harry Potter";
-
         Book book = new Book(title, "Rowling", 2000);
         bookService.addBook(book);
 
         User user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
         databaseManager.insertUser(user);
 
-        User userInDb = returnUserFromDb(user.getUsername(), databaseManager.selectUsers());
-
-        bookService.borrowBook(1, userInDb.getUsername());
-
-        boolean result = bookService.returnBook(1);
-
+        User userInDb = databaseManager.getUserByUsername(user.getUsername());
         Book bookInDb = returnBookFromDb(title, bookService);
+
+        bookService.borrowBook(bookInDb.getId(), userInDb.getUsername());
+        boolean result = bookService.returnBook(bookInDb.getId());
+        bookInDb = returnBookFromDb(title, bookService);
 
         assertTrue(result);
         assertTrue(bookInDb.isAvailable());
@@ -131,13 +127,6 @@ class BookServiceTest {
     private Book returnBookFromDb(String title, BookService bookService) {
         return bookService.getBooks().stream()
                 .filter(b -> b.getTitle().equals(title))
-                .findFirst()
-                .orElseThrow();
-    }
-
-    private User returnUserFromDb(String username, ArrayList<User> users) {
-        return users.stream()
-                .filter(u -> u.getUsername().equals(username))
                 .findFirst()
                 .orElseThrow();
     }
