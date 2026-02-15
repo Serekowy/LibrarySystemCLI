@@ -72,7 +72,7 @@ public class UserServiceTest {
         User user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
         userService.addUser(user);
 
-        Boolean result = userService.changeUserRole(getUserFromDb(user.getUsername()).getId(), Role.ADMIN);
+        boolean result = userService.changeUserRole(getUserFromDb(user.getUsername()).getId(), Role.ADMIN);
         assertTrue(result);
 
         User userFromDb = getUserFromDb(user.getUsername());
@@ -84,7 +84,7 @@ public class UserServiceTest {
         User user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
         userService.addUser(user);
 
-        Boolean result = userService.changeUserRole(getUserFromDb(user.getUsername()).getId(), Role.USER);
+        boolean result = userService.changeUserRole(getUserFromDb(user.getUsername()).getId(), Role.USER);
         assertFalse(result);
 
         User userFromDb = getUserFromDb(user.getUsername());

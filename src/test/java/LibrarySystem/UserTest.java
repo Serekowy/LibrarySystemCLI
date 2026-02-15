@@ -13,14 +13,14 @@ public class UserTest {
 
     @Test
     void shouldCheckPassword() {
-        User user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
+        user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
 
         assertTrue(user.checkPassword(user.getPassword()));
     }
 
     @Test
     void shouldNotAcceptPassword() {
-        User user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
+        user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
 
         assertFalse(user.checkPassword("1234"));
     }
