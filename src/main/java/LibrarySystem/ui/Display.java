@@ -126,7 +126,7 @@ public class Display {
 
     public void showBooksWithID(ArrayList<Book> books) {
         if (books.isEmpty()) {
-            System.out.println("Nie ma książek o podobnym tytule.");
+            System.out.println("Nie znaleziono książek spełniających wymagania.");
         } else {
             System.out.printf("%-3s %-30s %-20s %-15s %s%n", "ID", "Tytuł", "Autor", "Rok wydania", "Dostępna");
 
