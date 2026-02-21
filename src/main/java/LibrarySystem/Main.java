@@ -8,10 +8,12 @@ import LibrarySystem.model.NormalUser;
 import LibrarySystem.model.Role;
 import LibrarySystem.model.User;
 import LibrarySystem.ui.Display;
+import LibrarySystem.util.PasswordUtil;
 
 public class Main {
     public static void main(String[] args) {
 
+        PasswordUtil passwordUtil = new PasswordUtil();
         DatabaseManager databaseManager = new DatabaseManager();
         BookService bookService = new BookService(databaseManager);
         Display display = new Display();
@@ -22,7 +24,7 @@ public class Main {
         boolean systemRunning = true;
 
         if (databaseManager.getUserByUsername("a") == null) {
-            Admin admin = new Admin("a", "a", "root@admin.com", Role.ADMIN);
+            Admin admin = new Admin("a", passwordUtil.hashPassword("a"), "root@admin.com", Role.ADMIN);
             databaseManager.insertUser(admin);
         }
 
@@ -95,6 +97,7 @@ public class Main {
                     String repeatPassword = display.getRepeatPassword();
 
                     if (isUsernameAvailable && isEmailAvailable && password.equals(repeatPassword)) {
+                        password = passwordUtil.hashPassword(password);
                         User newUser = new NormalUser(username, password, email, Role.USER);
                         userService.addUser(newUser);
                         display.showRegisterSucces();
