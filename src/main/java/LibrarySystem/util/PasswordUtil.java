@@ -6,7 +6,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 public class PasswordUtil {
-    public String hashPassword(String password) {
+    public static String hashPassword(String password) {
         byte[] salt = new byte[16];
         new SecureRandom().nextBytes(salt);
 
@@ -18,7 +18,7 @@ public class PasswordUtil {
         return saltBase64 + ":" + hashedPasswordBase64;
     }
 
-    public boolean verifyPassword(String password, String hashedPassword) {
+    public static boolean verifyPassword(String password, String hashedPassword) {
         if (hashedPassword == null || password == null) return false;
 
         String[] passwordParts = hashedPassword.split(":");
@@ -31,7 +31,7 @@ public class PasswordUtil {
         return hash.equals(hashedInputPasswordBase64);
     }
 
-    private byte[] hashWithSalt(String password, byte[] salt) {
+    private static byte[] hashWithSalt(String password, byte[] salt) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(salt);

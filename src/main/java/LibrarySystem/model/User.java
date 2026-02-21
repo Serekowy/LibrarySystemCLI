@@ -7,8 +7,6 @@ import LibrarySystem.util.PasswordUtil;
 
 public abstract class User {
 
-    PasswordUtil passwordUtil = new PasswordUtil();
-
     protected int id;
     protected String username;
     protected String password;
@@ -50,7 +48,7 @@ public abstract class User {
     }
 
     public boolean checkPassword(String password) {
-        return passwordUtil.verifyPassword(password, this.password);
+        return PasswordUtil.verifyPassword(password, this.password);
     }
 
 
