@@ -80,7 +80,7 @@ public class UserServiceTest {
     }
 
     @Test
-    public void shoulNotChangeUserRole() {
+    public void shouldNotChangeUserRole() {
         User user = new NormalUser("Uzytkownik", "123", "u@u.com", Role.USER);
         userService.addUser(user);
 
