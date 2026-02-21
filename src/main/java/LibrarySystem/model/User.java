@@ -3,8 +3,11 @@ package LibrarySystem.model;
 import LibrarySystem.service.BookService;
 import LibrarySystem.service.UserService;
 import LibrarySystem.ui.Display;
+import LibrarySystem.util.PasswordUtil;
 
 public abstract class User {
+
+    PasswordUtil passwordUtil = new PasswordUtil();
 
     protected int id;
     protected String username;
@@ -47,7 +50,7 @@ public abstract class User {
     }
 
     public boolean checkPassword(String password) {
-        return this.password.equals(password);
+        return passwordUtil.verifyPassword(password, this.password);
     }
 
 
